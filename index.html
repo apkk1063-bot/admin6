@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSO VIP - Professional Admin</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@400;700&display=swap');
+        
+        :root { 
+            --kso-red: #ff4757;
+            --kso-blue: #00d2ff;
+            --kso-green: #2ed573;
+            --kso-gold: #ffa502;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body { 
+            font-family: 'Pyidaungsu', sans-serif; 
+            background: var(--bg); 
+            background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            margin: 0; padding: 0; color: #f1f5f9;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        #main-admin { width: 100%; max-width: 480px; padding: 20px; box-sizing: border-box; }
+
+        /* Stats Section */
+        .header-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: var(--card-bg); backdrop-filter: blur(10px); padding: 12px 5px; border-radius: 16px; text-align: center; border: 1px solid var(--glass-border); }
+        .stat-card div { font-size: 20px; font-weight: 800; }
+        .stat-card span { font-size: 11px; opacity: 0.8; }
+
+        /* Style Selectors */
+        .brand-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+        .b-btn { padding: 10px 5px; border-radius: 12px; border: 1px solid var(--glass-border); cursor: pointer; color: #fff; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.05); text-align: center; }
+        .b-btn.active-red { background: var(--kso-red); border-color: var(--kso-red); }
+        .b-btn.active-blue { background: var(--kso-blue); border-color: var(--kso-blue); }
+        .b-btn.active-green { background: var(--kso-green); border-color: var(--kso-green); }
+        .b-btn.active-gold { background: var(--kso-gold); border-color: var(--kso-gold); }
+
+        /* Slip Area */
+        #capture-area { 
+            width: 100%; height: 260px; border-radius: 24px; 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            margin: 0 auto 25px; border: 1px solid var(--glass-border);
+            position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .slip-glow { position: absolute; top: -40px; right: -40px; width: 140px; height: 140px; filter: blur(70px); opacity: 0.4; transition: 0.5s; }
+        .slip-content { position: relative; z-index: 1; padding: 25px; }
+        .slip-header { font-size: 22px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .slip-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px; }
+        .slip-footer { margin-top: 10px; font-size: 13px; font-weight: bold; text-align: center; padding: 6px; border-radius: 10px; background: rgba(255,255,255,0.05); }
+        .slip-thanks { margin-top: 15px; text-align: center; font-size: 12px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+
+        /* Panel */
+        .panel { background: var(--card-bg); padding: 22px; border-radius: 24px; border: 1px solid var(--glass-border); margin-bottom: 25px; }
+        .input-wrap { position: relative; margin-bottom: 15px; }
+        .u-input { width: 100%; padding: 14px; padding-right: 45px; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border); border-radius: 14px; color: white; font-family: 'Pyidaungsu'; box-sizing: border-box; outline: none; }
+        .u-input:focus { border-color: white; }
+        .paste-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; }
+        .save-btn { width: 100%; padding: 16px; color: white; border: none; border-radius: 16px; font-weight: bold; font-size: 16px; cursor: pointer; font-family: 'Pyidaungsu'; }
+
+        /* User List - Enhanced */
+        .user-list-title { margin: 20px 0 10px 5px; font-size: 16px; font-weight: bold; color: var(--kso-blue); }
+        .user-card { 
+            background: var(--card-bg); border-radius: 20px; padding: 18px; 
+            margin-bottom: 12px; border: 1px solid var(--glass-border);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .user-info-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .user-details { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+        .user-details b { color: #fff; font-size: 16px; }
+        .user-actions { display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+        .action-btn { background: rgba(255,255,255,0.05); border: none; color: #fff; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .action-btn.del { color: var(--kso-red); background: rgba(255, 71, 87, 0.1); }
+
+        #toast { position: fixed; bottom: 20px; background: #fff; color: #000; padding: 10px 20px; border-radius: 12px; display: none; z-index: 1000; font-family: 'Pyidaungsu'; font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<div id="main-admin">
+    <div class="header-stats">
+        <div class="stat-card"> <div id="stat-total">0</div> <span>အသုံးပြုသူ</span> </div>
+        <div class="stat-card"> <div id="stat-active" style="color:var(--kso-green)">0</div> <span>သက်တမ်းရှိ</span> </div>
+        <div class="stat-card"> <div id="stat-expired" style="color:var(--kso-red)">0</div> <span>ရက်ကုန်</span> </div>
+    </div>
+
+    <div class="brand-selector">
+        <button id="btn-red" class="b-btn active-red" onclick="setStyle('red')">KSO နီ</button>
+        <button id="btn-blue" class="b-btn" onclick="setStyle('blue')">KSO ပြာ</button>
+        <button id="btn-green" class="b-btn" onclick="setStyle('green')">KSO စိမ်း</button>
+        <button id="btn-gold" class="b-btn" onclick="setStyle('gold')">KSO ရွှေ</button>
+    </div>
+
+    <div id="capture-area">
+        <div id="slip-glow" class="slip-glow" style="background: var(--kso-red);"></div>
+        <div class="slip-content">
+            <div class="slip-header" id="slip-title" style="color: var(--kso-red);"><i class="fas fa-crown"></i> KSO VIP ဝန်ဆောင်မှု</div>
+            <div class="slip-row"><span>ကုဒ်နံပါတ် (ID)</span> <b id="p-id">---</b></div>
+            <div class="slip-row"><span>အသုံးပြုသူအမည်</span> <b id="p-name">---</b></div>
+            <div class="slip-row"><span>သက်တမ်းကုန်ရက်</span> <b id="p-exp">---</b></div>
+            <div class="slip-footer" id="p-days" style="color: var(--kso-green);">၀ ရက် ကျန်ရှိသည်</div>
+            <div class="slip-thanks">KSOကို အသုံးပြုပေးလို့ ကျေးဇူးတင်ပါတယ်!</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="input-wrap">
+            <input type="text" id="docId" class="u-input" placeholder="User ID ရိုက်ထည့်ပါ" oninput="autoCheckUser(this.value)">
+            <i class="fas fa-paste paste-btn" id="paste-icon" onclick="pasteVal('docId')"></i>
+        </div>
+        <div class="input-wrap">
+            <input type="text" id="username" class="u-input" placeholder="အသုံးပြုသူအမည်">
+        </div>
+        <input type="date" id="expiry" class="u-input" style="margin-bottom:15px;" oninput="updatePrv()">
+        <button class="save-btn" id="save-btn" style="background: var(--kso-red);" onclick="save()">သိမ်းဆည်းပြီး စလစ်ထုတ်မည်</button>
+    </div>
+
+    <div class="user-list-title"><i class="fas fa-users"></i> အသုံးပြုသူစာရင်း (အသေးစိတ်)</div>
+    <div id="user-list-container"></div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, doc, setDoc, onSnapshot, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDGCsxM1ccZ_ZswwNPZDI-ykOm5yJU1CIw",
+        authDomain: "ksovip-f4ffd.firebaseapp.com",
+        projectId: "ksovip-f4ffd",
+        storageBucket: "ksovip-f4ffd.appspot.com",
+        messagingSenderId: "400346502182",
+        appId: "1:400346502182:android:a01ef07542426892fc82e7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const usersCol = collection(db, "users");
+
+    window.setStyle = (color) => {
+        const colors = { red: 'var(--kso-red)', blue: 'var(--kso-blue)', green: 'var(--kso-green)', gold: 'var(--kso-gold)' };
+        const types = ['red', 'blue', 'green', 'gold'];
+        types.forEach(t => document.getElementById(`btn-${t}`).className = `b-btn ${t === color ? 'active-' + t : ''}`);
+        document.getElementById('slip-title').style.color = colors[color];
+        document.getElementById('slip-glow').style.background = colors[color];
+        document.getElementById('save-btn').style.background = colors[color];
+        document.getElementById('paste-icon').style.color = colors[color];
+    };
+
+    window.showT = (m) => {
+        const t = document.getElementById('toast');
+        t.innerText = m; t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 2000);
+    };
+
+    window.pasteVal = async (id) => {
+        const text = await navigator.clipboard.readText();
+        document.getElementById(id).value = text;
+        if(id === 'docId') window.autoCheckUser(text);
+        window.updatePrv();
+    };
+
+    window.autoCheckUser = async (id) => {
+        if(id.trim().length > 2) {
+            const dS = await getDoc(doc(db, "users", id.trim()));
+            if(dS.exists()) {
+                document.getElementById('username').value = dS.data().username;
+                document.getElementById('expiry').value = dS.data().expiryDate;
+                window.updatePrv();
+                window.showT("User Found ✅");
+            }
+        }
+    };
+
+    window.updatePrv = () => {
+        document.getElementById('p-id').innerText = document.getElementById('docId').value || "---";
+        document.getElementById('p-name').innerText = document.getElementById('username').value || "---";
+        const exp = document.getElementById('expiry').value;
+        document.getElementById('p-exp').innerText = exp || "---";
+        const diff = exp ? Math.max(0, Math.ceil((new Date(exp).setHours(0,0,0,0) - new Date().setHours(0,0,0,0)) / 86400000)) : 0;
+        document.getElementById('p-days').innerText = diff + " ရက် ကျန်ရှိသည်";
+    };
+
+    window.save = async () => {
+        const id = document.getElementById('docId').value.trim();
+        const name = document.getElementById('username').value.trim();
+        const exp = document.getElementById('expiry').value;
+        if(!id || !name || !exp) return alert("အချက်အလက်ဖြည့်ပါ");
+        await setDoc(doc(db, "users", id), { username: name, expiryDate: exp }, { merge: true });
+        const canvas = await html2canvas(document.getElementById('capture-area'), { scale: 3, backgroundColor: '#0f172a' });
+        const link = document.createElement('a');
+        link.download = `KSO_${name}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+        window.showT("သိမ်းဆည်းပြီးပါပြီ 🚀");
+    };
+
+    onSnapshot(usersCol, (s) => {
+        const list = s.docs.map(d => ({ id: d.id, ...d.data() }));
+        const activeCount = list.filter(u => (new Date(u.expiryDate).setHours(0,0,0,0) - new Date().setHours(0,0,0,0)) > 0).length;
+        document.getElementById('stat-total').innerText = list.length;
+        document.getElementById('stat-active').innerText = activeCount;
+        document.getElementById('stat-expired').innerText = list.length - activeCount;
+
+        const c = document.getElementById("user-list-container");
+        c.innerHTML = "";
+        list.sort((a,b) => new Date(b.expiryDate) - new Date(a.expiryDate)).forEach(u => {
+            const diff = Math.max(0, Math.ceil((new Date(u.expiryDate).setHours(0,0,0,0) - new Date().setHours(0,0,0,0)) / 86400000));
+            const div = document.createElement('div');
+            div.className = "user-card";
+            div.innerHTML = `
+                <div class="user-info-top">
+                    <div class="user-details">
+                        <b>${u.username}</b><br>
+                        ID: ${u.id}<br>
+                        သက်တမ်းကုန်: ${u.expiryDate}
+                    </div>
+                    <div style="text-align:right">
+                        <span style="color:${diff > 0 ? 'var(--kso-green)' : 'var(--kso-red)'}; font-weight:bold; font-size:14px;">
+                            ${diff > 0 ? diff + ' ရက်ကျန်' : 'ရက်ကုန်ပြီ'}
+                        </span>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <button class="action-btn" onclick="fill('${u.id}','${u.username}','${u.expiryDate}')">
+                        <i class="fas fa-edit"></i> ပြင်မည်
+                    </button>
+                    <button class="action-btn del" onclick="del('${u.id}')">
+                        <i class="fas fa-trash"></i> ဖျက်မည်
+                    </button>
+                </div>
+            `;
+            c.appendChild(div);
+        });
+    });
+
+    window.fill = (i,n,e) => {
+        document.getElementById('docId').value = i;
+        document.getElementById('username').value = n;
+        document.getElementById('expiry').value = e;
+        window.updatePrv();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.del = async (i) => { if(confirm("ဤအသုံးပြုသူကို ဖျက်ရန် သေချာပါသလား?")) await deleteDoc(doc(db, "users", i)); };
+    document.getElementById('username').oninput = window.updatePrv;
+</script>
+</body>
+</html>
+
